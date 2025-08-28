@@ -31,6 +31,22 @@ npm run dev
 - `GET /api/profile` - Get user profile (authenticated)
 - `PUT /api/profile` - Update user profile (authenticated)
 
+### Meetings
+- `POST /api/meetings` - Create meeting
+- `GET /api/meetings` - Get user meetings
+- `PUT /api/meetings/:id` - Update meeting
+- `DELETE /api/meetings/:id` - Cancel meeting
+
+### Video Calling
+- `GET /api/video/room/:meetingId` - Create/get video room
+- `GET /api/video/join/:roomId` - Join video room
+
+### Documents
+- `POST /api/documents/upload` - Upload document
+- `GET /api/documents` - Get user documents
+- `GET /api/documents/:id` - Get document details
+- `POST /api/documents/:id/sign` - Sign document
+
 ### Health Check
 - `GET /api/health` - Server health status
 
@@ -41,3 +57,6 @@ npm run dev
 - `JWT_SECRET` - JWT signing secret
 - `JWT_EXPIRE` - JWT expiration time
 - `NODE_ENV` - Environment (development/production)
+- `CLOUDINARY_CLOUD_NAME` - Cloudinary cloud name
+- `CLOUDINARY_API_KEY` - Cloudinary API key
+- `CLOUDINARY_API_SECRET` - Cloudinary API secret

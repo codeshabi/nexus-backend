@@ -1,4 +1,6 @@
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -7,14 +9,33 @@ require('dotenv').config();
 const connectDB = require('./config/database');
 const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
+const meetingRoutes = require('./routes/meetings');
+const documentRoutes = require('./routes/documents');
+const videoRoutes = require('./routes/video');
+const handleVideoCall = require('./socket/videoCall');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.NODE_ENV === 'production' 
+      ? 'https://nexus-iota-five.vercel.app' 
+      : 'http://localhost:3000',
+    methods: ['GET', 'POST']
+  }
+});
 
 // Connect to database
 connectDB();
 
+// Initialize video call handler
+handleVideoCall(io);
+
 // Security middleware
 app.use(helmet());
+
+
+
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? 'https://nexus-iota-five.vercel.app' 
@@ -36,6 +57,9 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/meetings', meetingRoutes);
+app.use('/api/documents', documentRoutes);
+app.use('/api/video', videoRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -55,8 +79,8 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-module.exports = app;
+module.exports = { app, server, io };
